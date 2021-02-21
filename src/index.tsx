@@ -36,8 +36,13 @@ const App: React.FC = () => {
       bundle: true,
       write: false,
       plugins: [unpkgPathPlugin()],
+      //https://esbuild.github.io/api/#define
+      define: {
+        "process.env.NODE_ENV": '"production"',
+        global: "window",
+      },
     });
-    console.log('result',result);
+    console.log("result", result);
     setCode(result.outputFiles[0].text);
   };
   return (

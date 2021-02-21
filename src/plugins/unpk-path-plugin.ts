@@ -20,7 +20,9 @@ export const unpkgPathPlugin = () => {
           return {
             namespace: "a",
             //https://developer.mozilla.org/en-US/docs/Web/API/URL
-            path: new URL(args.path, args.importer + "/").href,
+            // path: new URL(args.path, args.importer + "/").href,
+            path: new URL(args.path, `https://unpkg.com${args.resolveDir}/`)
+              .href,
           };
         }
         return {
@@ -42,16 +44,18 @@ export const unpkgPathPlugin = () => {
           return {
             loader: "jsx",
             contents: `
-              import message from 'medium-test-pkg';
+              import message from 'nested-test-pkg';
               console.log(message);
             `,
           };
         }
-        const { data } = await axios.get(args.path);
-        console.log(data);
+        const { data, request } = await axios.get(args.path);
+        console.log(request);
+        console.log(new URL("./", request.responseURL));
         return {
           loader: "jsx",
           contents: data,
+          resolveDir: new URL("./", request.responseURL).pathname,
         };
       });
     },

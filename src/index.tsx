@@ -1,8 +1,50 @@
-import React from 'react'
-import ReactDOM from 'react-dom';
+import * as esbuild from "esbuild-wasm";
+import React from "react";
+import ReactDOM from "react-dom";
 
-const App =()=>{
-  return <h1>Hi</h1>
-}
+const App: React.FC = () => {
+  const ref = React.useRef<any>();
+  const [input, setInput] = React.useState("");
+  const [code, setCode] = React.useState("");
 
-ReactDOM.render(<App/>,document.getElementById('root'))
+  React.useEffect(() => {
+    startService();
+  }, []);
+
+  //https://esbuild.github.io/api/#running-in-the-browser
+  const startService = async () => {
+    ref.current = await esbuild.startService({
+      worker: true,
+      wasmURL: "/esbuild.wasm",
+    });
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  };
+
+  const onClick = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (!ref.current) {
+      return;
+    }
+    const result = await ref.current.transform(input, {
+      loader: "jsx",
+      target: "es2015",
+    });
+
+    setCode(result.code);
+  };
+  return (
+    <div>
+      <textarea onChange={handleChange} value={input}></textarea>
+      <div>
+        <button onClick={onClick}>Submit</button>
+      </div>
+      <pre>{code}</pre>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));

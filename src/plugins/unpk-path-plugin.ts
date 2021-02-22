@@ -11,7 +11,7 @@ const fileCache = localForage.createInstance({
 
 //https://esbuild.github.io/plugins/#using-plugins
 //override esbuild natural behaviour
-export const unpkgPathPlugin = () => {
+export const unpkgPathPlugin = (inputCode: string) => {
   return {
     //mainly for debugging
     name: "unpkg-path-plugin",
@@ -46,11 +46,7 @@ export const unpkgPathPlugin = () => {
         if (args.path === "index.js") {
           return {
             loader: "jsx",
-            contents: `
-              import react from 'react';
-              import reactdom from 'react-dom';
-              console.log(message);
-            `,
+            contents: inputCode,
           };
         }
         //check to see if we have already fetched this file and if it is in the cache

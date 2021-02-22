@@ -35,7 +35,7 @@ const App: React.FC = () => {
       entryPoints: ["index.js"],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin()],
+      plugins: [unpkgPathPlugin(input)],
       //https://esbuild.github.io/api/#define
       define: {
         "process.env.NODE_ENV": '"production"',

@@ -1,5 +1,14 @@
 import * as esbuild from "esbuild-wasm";
 import axios from "axios";
+import localForage from "localforage";
+
+//create cache for packages
+//https://localforage.github.io/localForage/
+//https://localforage.github.io/localForage/#multiple-instances-createinstance
+const fileCache = localForage.createInstance({
+  name: "filecache",
+});
+
 //https://esbuild.github.io/plugins/#using-plugins
 //override esbuild natural behaviour
 export const unpkgPathPlugin = () => {
@@ -29,12 +38,6 @@ export const unpkgPathPlugin = () => {
           namespace: "a",
           path: `https://unpkg.com/${args.path}`,
         };
-        // else if (args.path === "tiny-test-pkg") {
-        //   return {
-        //     path: "https://unpkg.com/tiny-test-pkg@1.0.0/index.js",
-        //     namespace: "a",
-        //   };
-        // }
       });
       // if esbuild is attempting to load index.js don't do the normal think return if{}
       build.onLoad({ filter: /.*/ }, async (args: any) => {
@@ -50,14 +53,25 @@ export const unpkgPathPlugin = () => {
             `,
           };
         }
+        //check to see if we have already fetched this file and if it is in the cache
+        const cacheResult = await fileCache.getItem<esbuild.OnLoadResult>(
+          args.path
+        );
+        //if it is, return it immediately
+        if (cacheResult) {
+          return cacheResult;
+        }
         const { data, request } = await axios.get(args.path);
-        console.log(request);
-        console.log(new URL("./", request.responseURL));
-        return {
+        //store response in cache
+
+        const result: esbuild.OnLoadResult = {
           loader: "jsx",
           contents: data,
           resolveDir: new URL("./", request.responseURL).pathname,
         };
+
+        await fileCache.setItem(args.path, result);
+        return result;
       });
     },
   };

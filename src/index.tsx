@@ -1,6 +1,7 @@
 import * as esbuild from "esbuild-wasm";
 import React from "react";
 import ReactDOM from "react-dom";
+import { fetchPlugin } from "./plugins/fetch-plugin";
 import { unpkgPathPlugin } from "./plugins/unpk-path-plugin";
 
 const App: React.FC = () => {
@@ -35,7 +36,12 @@ const App: React.FC = () => {
       entryPoints: ["index.js"],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin(input)],
+      plugins: [
+        //first find the paths
+        unpkgPathPlugin(),
+        //then fetch the data
+        fetchPlugin(input),
+      ],
       //https://esbuild.github.io/api/#define
       define: {
         "process.env.NODE_ENV": '"production"',

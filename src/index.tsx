@@ -24,7 +24,9 @@ const App: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
   };
-
+  const handleValueChange = (value: string) => {
+    setInput(value);
+  };
   const onClick = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -76,7 +78,10 @@ const App: React.FC = () => {
   `;
   return (
     <div>
-      <CodeEditor></CodeEditor>
+      <CodeEditor
+        initialValue="const a = 1"
+        onChange={(value: string) => handleValueChange(value)}
+      ></CodeEditor>
       <textarea onChange={handleChange} value={input}></textarea>
       <div>
         <button onClick={onClick}>Submit</button>

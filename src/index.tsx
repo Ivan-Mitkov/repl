@@ -3,12 +3,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { fetchPlugin } from "./plugins/fetch-plugin";
 import { unpkgPathPlugin } from "./plugins/unpk-path-plugin";
+import CodeEditor from "./components/CodeEditor";
 
 const App: React.FC = () => {
   const ref = React.useRef<any>();
   const iframe = React.useRef<any>();
   const [input, setInput] = React.useState("");
-  const [code, setCode] = React.useState("");
 
   React.useEffect(() => {
     startService();
@@ -76,11 +76,11 @@ const App: React.FC = () => {
   `;
   return (
     <div>
+      <CodeEditor></CodeEditor>
       <textarea onChange={handleChange} value={input}></textarea>
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      <pre>{code}</pre>
       <iframe
         sandbox="allow-scripts"
         srcDoc={html}

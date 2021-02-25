@@ -32,6 +32,8 @@ const App: React.FC = () => {
     if (!ref.current) {
       return;
     }
+    //update iframe to default before new code
+    iframe.current.srcdoc = html;
     //https://esbuild.github.io/api/#build-api
     const result = await ref.current.build({
       entryPoints: ["index.js"],

@@ -20,11 +20,12 @@ const CodeCell: React.FC = () => {
   return (
     <Resizable direction={Direction.vertical}>
       <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
-        <CodeEditor
-          initialValue="const a = 1"
-          onChange={(value: string) => handleValueChange(value)}
-        ></CodeEditor>
-
+        <Resizable direction={Direction.horisontal}>
+          <CodeEditor
+            initialValue="const a = 1"
+            onChange={(value: string) => handleValueChange(value)}
+          ></CodeEditor>
+        </Resizable>
         <Preview code={code} />
       </div>
     </Resizable>

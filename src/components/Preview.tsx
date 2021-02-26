@@ -1,9 +1,9 @@
 import React from "react";
 import "./preview.css";
+
 interface PreviewProps {
   code: string;
 }
-
 const html = `
 <html>
 <head></head>
@@ -35,7 +35,6 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
     //iframe does not send events to the parent, so we a making after element in front of it when is dragged
     <div className="preview-wrapper">
       <iframe
-        
         sandbox="allow-scripts"
         srcDoc={html}
         title="my-iframe"

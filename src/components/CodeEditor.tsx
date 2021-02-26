@@ -2,7 +2,11 @@ import React from "react";
 import MonacoEditor, { EditorDidMount } from "@monaco-editor/react";
 import prettier from "prettier";
 import parser from "prettier/parser-babel";
+import codeShift from "jscodeshift";
+//create file types.d.ts for removing error with missing type defs
+import Highlighter from "monaco-jsx-highlighter";
 import "./code-editor.css";
+import "./syntax.css";
 
 interface CodeEditorProps {
   initialValue: string;
@@ -24,6 +28,31 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
     });
     //tab is 2 spaces
     monacoEditor.getModel()?.updateOptions({ tabSize: 2 });
+
+    //highlighting js code in editor
+    const highlighter = new Highlighter(
+      //@ts-ignore
+      window.monaco,
+      codeShift,
+      monacoEditor
+    );
+
+    /**
+     * https://www.npmjs.com/package/monaco-jsx-highlighter
+     *  Activate highlighting (debounceTime default: 100ms)
+     * monacoJSXHighlighter.highLightOnDidChangeModelContent(100);
+     *  Activate JSX commenting
+     * monacoJSXHighlighter.addJSXCommentCommand();
+     *  Done =)
+     */
+    highlighter.highLightOnDidChangeModelContent(
+      //not logging errors on typing
+      () => {},
+      () => {},
+      undefined,
+      () => {}
+    );
+    highlighter.addJSXCommentCommand();
   };
 
   const formatCode = () => {

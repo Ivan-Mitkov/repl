@@ -5,11 +5,11 @@ import "bulmaswatch/superhero/bulmaswatch.min.css";
 import { fetchPlugin } from "./plugins/fetch-plugin";
 import { unpkgPathPlugin } from "./plugins/unpk-path-plugin";
 import CodeEditor from "./components/CodeEditor";
-
+import Preview from "./components/Preview";
 const App: React.FC = () => {
   const ref = React.useRef<any>();
-  const iframe = React.useRef<any>();
   const [input, setInput] = React.useState("");
+  const [code, setCode] = React.useState("");
 
   React.useEffect(() => {
     startService();
@@ -22,9 +22,7 @@ const App: React.FC = () => {
       wasmURL: "https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm",
     });
   };
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value);
-  };
+
   const handleValueChange = (value: string) => {
     setInput(value);
   };
@@ -35,8 +33,7 @@ const App: React.FC = () => {
     if (!ref.current) {
       return;
     }
-    //update iframe to default before new code
-    iframe.current.srcdoc = html;
+
     //https://esbuild.github.io/api/#build-api
     const result = await ref.current.build({
       entryPoints: ["index.js"],
@@ -54,45 +51,19 @@ const App: React.FC = () => {
         global: "window",
       },
     });
-    // setCode(result.outputFiles[0].text);
-    iframe.current.contentWindow.postMessage(result.outputFiles[0].text, "*");
+    setCode(result.outputFiles[0].text);
   };
 
-  const html = `
-  <html>
-  <head></head>
-  <body>
-    <div id="root"></div>
-    <script>
-      window.addEventListener('message',(event)=>{
-        try{
-          eval(event.data)
-        }catch(error){
-          const root=document.querySelector('#root')
-          root.innerHTML='<div style="color:red"><h4>Runtime error </h4>' + error + '</div>'
-          throw error;
-        }
-      },false)
-    </script>
-  </body>
-</html>   
-  `;
   return (
     <div>
       <CodeEditor
         initialValue="const a = 1"
         onChange={(value: string) => handleValueChange(value)}
       ></CodeEditor>
-      <textarea onChange={handleChange} value={input}></textarea>
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      <iframe
-        sandbox="allow-scripts"
-        srcDoc={html}
-        title="my-iframe"
-        ref={iframe}
-      />
+      <Preview code={code} />
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React from "react";
 import CodeEditor from "./CodeEditor";
 import Preview from "./Preview";
 import bundler from "../bundler";
+import Resizable from "./Resizable";
+import { Direction } from "../enums";
 
 const CodeCell: React.FC = () => {
   const [input, setInput] = React.useState("");
@@ -16,16 +18,16 @@ const CodeCell: React.FC = () => {
   };
 
   return (
-    <div>
-      <CodeEditor
-        initialValue="const a = 1"
-        onChange={(value: string) => handleValueChange(value)}
-      ></CodeEditor>
-      <div>
-        <button onClick={onClick}>Submit</button>
+    <Resizable direction={Direction.vertical}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
+        <CodeEditor
+          initialValue="const a = 1"
+          onChange={(value: string) => handleValueChange(value)}
+        ></CodeEditor>
+
+        <Preview code={code} />
       </div>
-      <Preview code={code} />
-    </div>
+    </Resizable>
   );
 };
 

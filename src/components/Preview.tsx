@@ -28,7 +28,10 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
   //update iframe to default before new code
   React.useEffect(() => {
     iframe.current.srcdoc = html;
-    iframe.current.contentWindow.postMessage(code, "*");
+    //to give browser enough tome to update the source doc and setup message listener
+    setTimeout(() => {
+      iframe.current.contentWindow.postMessage(code, "*");
+    }, 100);
   }, [code]);
 
   return (

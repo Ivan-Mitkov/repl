@@ -12,17 +12,27 @@ const CodeCell: React.FC = () => {
   const handleValueChange = (value: string) => {
     setInput(value);
   };
-  const onClick = async () => {
-    const bundeledCode = await bundler(input);
-    setCode(bundeledCode);
-  };
+
+  React.useEffect(() => {
+    const timer = setTimeout(async () => {
+      const bundeledCode = await bundler(input);
+      setCode(bundeledCode);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [input]);
 
   return (
     <Resizable direction={Direction.vertical}>
       <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
         <Resizable direction={Direction.horisontal}>
           <CodeEditor
-            initialValue="const a = 1"
+            initialValue="import React from 'react';
+                        import ReactDOM from 'react-dom';
+                        const App=()=><h1>Hi</h1>;
+                        ReactDOM.render(<App/>,document.querySelector('#root') )"
             onChange={(value: string) => handleValueChange(value)}
           ></CodeEditor>
         </Resizable>

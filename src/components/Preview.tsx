@@ -1,29 +1,39 @@
 import React from "react";
+import bundler from "../bundler";
 import "./preview.css";
 
 interface PreviewProps {
   code: string;
+  bundlingStatus: string;
 }
-const html = `
+const html =`
 <html>
 <head></head>
 <body>
   <div id="root"></div>
   <script>
+  const handleError=(err)=>{
+    const root=document.querySelector('#root')
+    root.innerHTML='<div style="color:red"><h4>Runtime error </h4>' + err + '</div>'
+    throw error;
+
+  }
+    window.addEventListener('error',(event)=>{
+      event.preventDefault()
+      handleError(event.error)
+    })
     window.addEventListener('message',(event)=>{
       try{
         eval(event.data)
-      }catch(error){
-        const root=document.querySelector('#root')
-        root.innerHTML='<div style="color:red"><h4>Runtime error </h4>' + error + '</div>'
-        throw error;
+      }catch(err){
+        handleError(err)
       }
     },false)
   </script>
 </body>
 </html>   
 `;
-const Preview: React.FC<PreviewProps> = ({ code }) => {
+const Preview: React.FC<PreviewProps> = ({ code, bundlingStatus }) => {
   const iframe = React.useRef<any>();
   //update iframe to default before new code
   React.useEffect(() => {
@@ -33,7 +43,6 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
       iframe.current.contentWindow.postMessage(code, "*");
     }, 100);
   }, [code]);
-
   return (
     //iframe does not send events to the parent, so we a making after element in front of it when is dragged
     <div className="preview-wrapper">
@@ -43,6 +52,7 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
         title="my-iframe"
         ref={iframe}
       />
+      {bundlingStatus && <div className="preview-error">{bundlingStatus}</div>}
     </div>
   );
 };

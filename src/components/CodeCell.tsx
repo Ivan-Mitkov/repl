@@ -8,6 +8,7 @@ import { Direction } from "../enums";
 const CodeCell: React.FC = () => {
   const [input, setInput] = React.useState("");
   const [code, setCode] = React.useState("");
+  const [error, setError] = React.useState("");
 
   const handleValueChange = (value: string) => {
     setInput(value);
@@ -16,7 +17,8 @@ const CodeCell: React.FC = () => {
   React.useEffect(() => {
     const timer = setTimeout(async () => {
       const bundeledCode = await bundler(input);
-      setCode(bundeledCode);
+      setCode(bundeledCode.code);
+      setError(bundeledCode.err);
     }, 1000);
 
     return () => {
@@ -36,7 +38,7 @@ const CodeCell: React.FC = () => {
             onChange={(value: string) => handleValueChange(value)}
           ></CodeEditor>
         </Resizable>
-        <Preview code={code} />
+        <Preview code={code} bundlingStatus={error} />
       </div>
     </Resizable>
   );

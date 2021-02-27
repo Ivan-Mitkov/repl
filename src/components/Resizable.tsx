@@ -10,6 +10,9 @@ interface ResizableProps {
 const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   const [innerHeight, setInnerHeight] = React.useState(window.innerHeight);
   const [innerWidth, setInnerWidth] = React.useState(window.innerWidth);
+  //fix width change when browser resize
+  const [width, setWidth] = React.useState(window.innerWidth * 0.75);
+
   React.useEffect(() => {
     let timer: any;
     const listener = () => {
@@ -20,37 +23,43 @@ const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
         }
         setInnerHeight(window.innerHeight);
         setInnerWidth(window.innerWidth);
+        //when resizing browser ResizableBox max constraint is ignored, so to fix this:
+        if (width > window.innerWidth * 0.75) {
+          setWidth(window.innerWidth * 0.75);
+        }
       }, 100);
     };
+    //resize with resize of the browser
     window.addEventListener("resize", listener);
     return () => {
       window.removeEventListener("resize", listener);
     };
-  }, []);
+  }, [width]);
 
   let resizableProps: ResizableBoxProps;
   if (direction === Direction.horisontal) {
     resizableProps = {
       className: "resize-horisontal",
       height: Infinity,
-      width: innerWidth * 0.75,
+      width: width,
       resizeHandles: ["e"],
       maxConstraints: [innerWidth * 0.75, Infinity],
       minConstraints: [50, Infinity],
+      onResizeStop: (event, data) => {
+        setWidth(data.size.width);
+      },
     };
   } else {
     resizableProps = {
       height: 300,
+      //width can't be %
       width: Infinity,
       resizeHandles: ["s"],
       maxConstraints: [Infinity, innerHeight * 0.9],
       minConstraints: [Infinity, 50],
     };
   }
-  return (
-    //width can't be %
-    <ResizableBox {...resizableProps}>{children}</ResizableBox>
-  );
+  return <ResizableBox {...resizableProps}>{children}</ResizableBox>;
 };
 
 export default Resizable;

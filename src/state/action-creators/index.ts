@@ -8,7 +8,7 @@ import {
   MoveCellAction,
   UpdateCellAction,
 } from "../actions";
-import { CellTypes, Direction } from "../cell";
+import { CellTypes, Direction, Cell } from "../cell";
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {

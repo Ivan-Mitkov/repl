@@ -5,12 +5,12 @@ import "bulmaswatch/superhero/bulmaswatch.min.css";
 import { store } from "./state";
 import CodeCell from "./components/CodeCell";
 import TextEditor from "./components/TextEditor";
+import CellList from "./components/CellList";
 const App: React.FC = () => {
   return (
     <Provider store={store}>
       <div>
-        <TextEditor />
-        <CodeCell />
+        <CellList></CellList>
       </div>
     </Provider>
   );

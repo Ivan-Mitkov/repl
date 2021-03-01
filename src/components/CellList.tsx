@@ -9,7 +9,7 @@ const CellList: React.FC = () => {
   });
 
   const reneredCells = cells.map((cell) => (
-    <CellListItem cell={cell} key={cell.id} />
+    <CellListItem cell={cell} key={cell.id}/>
   ));
 
   return <div>{reneredCells}</div>;

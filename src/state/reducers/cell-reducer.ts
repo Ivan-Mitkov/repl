@@ -50,7 +50,6 @@ const reducer = produce((state: CellState = initialState, action: Action) => {
       const foundIndex = state.order.findIndex(
         (id) => id === action.payload.id
       );
-      console.log(foundIndex);
       if (foundIndex < 0) {
         state.order = state.order.concat(cell.id);
       } else {

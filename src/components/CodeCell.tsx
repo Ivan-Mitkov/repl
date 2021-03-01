@@ -4,19 +4,25 @@ import Preview from "./Preview";
 import bundler from "../bundler";
 import Resizable from "./Resizable";
 import { Direction } from "../enums";
+import { Cell } from "../state";
+import { useActions } from "../hooks/useActions";
 
-const CodeCell: React.FC = () => {
-  const [input, setInput] = React.useState("");
+interface CodeCellProps {
+  cell: Cell;
+}
+const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const [code, setCode] = React.useState("");
   const [error, setError] = React.useState("");
+  //action creators
+  const { updateCell } = useActions();
 
   const handleValueChange = (value: string) => {
-    setInput(value);
+    updateCell(cell.id, value);
   };
 
   React.useEffect(() => {
     const timer = setTimeout(async () => {
-      const bundeledCode = await bundler(input);
+      const bundeledCode = await bundler(cell.content);
       setCode(bundeledCode.code);
       setError(bundeledCode.err);
     }, 1000);
@@ -24,17 +30,14 @@ const CodeCell: React.FC = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [input]);
+  }, [cell.content]);
 
   return (
     <Resizable direction={Direction.vertical}>
       <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
         <Resizable direction={Direction.horisontal}>
           <CodeEditor
-            initialValue="import React from 'react';
-                        import ReactDOM from 'react-dom';
-                        const App=()=><h1>Hi</h1>;
-                        ReactDOM.render(<App/>,document.querySelector('#root') )"
+            initialValue={cell.content}
             onChange={(value: string) => handleValueChange(value)}
           ></CodeEditor>
         </Resizable>

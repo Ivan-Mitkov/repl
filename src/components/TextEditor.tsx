@@ -1,20 +1,28 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 import "./text-editor.css";
+import { Cell } from "../state";
+import { useActions } from "../hooks/useActions";
 
+interface TextEditorProps {
+  cell: Cell;
+}
 //https://uiwjs.github.io/react-md-editor/
-const TextEditor: React.FC = () => {
+const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   const ref = React.useRef<HTMLDivElement | null>(null);
   const [editing, setEditing] = React.useState(false);
-  const [value, setValue] = React.useState("# Edit");
+
+  //action creators
+  const { updateCell } = useActions();
 
   const showEditor = () => {
     setEditing(!editing);
   };
   const handleChange = (e: string) => {
-    setValue(e);
+    updateCell(cell.id, e);
   };
   React.useEffect(() => {
+    //Close on click outside
     const listener = (event: MouseEvent) => {
       //if clicked in editor return
       if (
@@ -37,7 +45,10 @@ const TextEditor: React.FC = () => {
   if (editing) {
     return (
       <div ref={ref} className="text-editor">
-        <MDEditor value={value} onChange={(v) => handleChange(v || "")} />
+        <MDEditor
+          value={cell.content}
+          onChange={(v) => handleChange(v || "")}
+        />
       </div>
     );
   }
@@ -45,7 +56,7 @@ const TextEditor: React.FC = () => {
   return (
     <div onClick={showEditor} className="text-editor card">
       <div className="card-content">
-        <MDEditor.Markdown source={value} />
+        <MDEditor.Markdown source={cell.content || "Click to edit"} />
       </div>
     </div>
   );

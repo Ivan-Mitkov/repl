@@ -37,7 +37,7 @@ const reducer = produce((state: CellState = initialState, action: Action) => {
       const { id, content } = action.payload;
       state.data[id].content = content;
       return state;
-    case ActionType.INSERT_CELL_BEFORE:
+    case ActionType.INSERT_CELL_AFTER:
       //create new Cell
       const cell: Cell = {
         content: "",
@@ -51,10 +51,10 @@ const reducer = produce((state: CellState = initialState, action: Action) => {
         (id) => id === action.payload.id
       );
       if (foundIndex < 0) {
-        state.order = state.order.concat(cell.id);
+        state.order.unshift(cell.id);
       } else {
         //insert in order arr
-        state.order.splice(foundIndex, 0, cell.id);
+        state.order.splice(foundIndex + 1, 0, cell.id);
       }
       return state;
     case ActionType.MOVE_CELL:

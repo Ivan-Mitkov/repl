@@ -11,7 +11,7 @@ ReactDOM.render(<App />, document.querySelector("#root"));
 
 will render Hi in iframe
 
-#### show(<div>Hi</div>)
+#### <pre>show(<div>Hi</div>)</pre>
 
 is equivalent to if the arg of show() looks like JSX imports and render are done by the function
 

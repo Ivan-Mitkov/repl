@@ -4,11 +4,13 @@ import { Action } from "../actions";
 
 //output of the reducer
 interface BundleState {
-  [key: string]: {
-    loading: boolean;
-    code: string;
-    error: string;
-  };
+  [key: string]:
+    | {
+        loading: boolean;
+        code: string;
+        error: string;
+      }
+    | undefined;
 }
 
 //initial state

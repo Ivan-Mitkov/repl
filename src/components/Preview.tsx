@@ -1,5 +1,4 @@
 import React from "react";
-import bundler from "../bundler";
 import "./preview.css";
 
 interface PreviewProps {

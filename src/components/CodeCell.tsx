@@ -7,7 +7,7 @@ import { Cell } from "../state";
 import { useActions } from "../hooks/useActions";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import "./code-cell.css";
-
+import { useCumulativeCode } from "../hooks/useCumulativeCode";
 interface CodeCellProps {
   cell: Cell;
 }
@@ -16,65 +16,25 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector((state) => state.bundles[cell.id]);
 
-  //function for easy show result
-  const showFunc = `
-  import _React from 'react';
-  import _ReactDOM from 'react-dom';
-  var show=(value)=>{
-    const root=document.querySelector('#root');
-    if(typeof value==='object'){
-      if(value.$$typeof && value.props){
-        _ReactDOM.render(value,root)
-      }else{
-        root.innerHTML=JSON.stringify(value);
-      }
-    }else{
-      root.innerHTML=value;
-    }
-  }
-  `;
-  //same function but for other cells
-  const showFuncNoOp = "var show=()=>{}";
-  //from state get the combine code of all cells
-  const cumulativeCode = useTypedSelector((state) => {
-    //reach into cell peace of state
-    const { data, order } = state.cells;
-    const orderedCell = order.map((id) => data[id]);
-    //code of all previous code cells
-    const accumulatedCode = [];
-    for (let c of orderedCell) {
-      if (c.id === cell.id) {
-        accumulatedCode.push(showFunc);
-      } else {
-        accumulatedCode.push(showFuncNoOp);
-      }
-      if (c.type === "code") {
-        accumulatedCode.push(c.content);
-      }
-      //stop before reaching current cell
-      if (c.id === cell.id) {
-        break;
-      }
-    }
-    return accumulatedCode;
-  });
+  const cumulativeCode = useCumulativeCode(cell.id);
+
   const handleValueChange = (value: string) => {
     updateCell(cell.id, value);
   };
   React.useLayoutEffect(() => {
-    createBundle(cell.id, cumulativeCode.join("\n"));
+    createBundle(cell.id, cumulativeCode);
     // eslint-disable-next-line
   }, []);
   React.useEffect(() => {
     const timer = setTimeout(async () => {
-      createBundle(cell.id, cumulativeCode.join("\n"));
+      createBundle(cell.id, cumulativeCode);
     }, 1000);
 
     return () => {
       clearTimeout(timer);
     };
     //createBundle is memoized in useTypedSelector
-  }, [cumulativeCode.join("\n"), cell.content, cell.id, createBundle]);
+  }, [cumulativeCode, cell.content, cell.id, createBundle]);
 
   return (
     <Resizable direction={Direction.vertical}>

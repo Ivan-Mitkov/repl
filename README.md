@@ -9,9 +9,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 
-const App = () =>  < some html tag>  Hi </some html tag>;
+const App = () =>  \< h1>  Hi \<\/h1>;
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+ReactDOM.render( \<  App \/\>, document.querySelector("#root"));
 
 </code>
 
@@ -25,9 +25,9 @@ import React from "react";
 
 import ReactDOM from "react-dom";
 
-const App = () => < some html tag> Hi </some html tag>;
+const App = () => \< h1> Hi \<\/h1>;
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+ReactDOM.render(\<App \/\>, document.querySelector("#root"));
 
 if the arg of show() looks like JSX imports and render are done by the function
 

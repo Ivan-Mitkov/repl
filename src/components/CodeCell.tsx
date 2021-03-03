@@ -15,31 +15,39 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   //action creators
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector((state) => state.bundles[cell.id]);
+
+  //function for easy show result
+  const showFunc = `
+  import _React from 'react';
+  import _ReactDOM from 'react-dom';
+  var show=(value)=>{
+    const root=document.querySelector('#root');
+    if(typeof value==='object'){
+      if(value.$$typeof && value.props){
+        _ReactDOM.render(value,root)
+      }else{
+        root.innerHTML=JSON.stringify(value);
+      }
+    }else{
+      root.innerHTML=value;
+    }
+  }
+  `;
+  //same function but for other cells
+  const showFuncNoOp = "var show=()=>{}";
   //from state get the combine code of all cells
   const cumulativeCode = useTypedSelector((state) => {
     //reach into cell peace of state
     const { data, order } = state.cells;
     const orderedCell = order.map((id) => data[id]);
     //code of all previous code cells
-    const accumulatedCode = [
-      `
-      import _React from 'react';
-      import _ReactDOM from 'react-dom';
-      const show=(value)=>{
-        const root=document.querySelector('#root');
-        if(typeof value==='object'){
-          if(value.$$typeof && value.props){
-            _ReactDOM.render(value,root)
-          }else{
-            root.innerHTML=JSON.stringify(value);
-          }
-        }else{
-          root.innerHTML=value;
-        }
-      }
-      `,
-    ];
+    const accumulatedCode = [];
     for (let c of orderedCell) {
+      if (c.id === cell.id) {
+        accumulatedCode.push(showFunc);
+      } else {
+        accumulatedCode.push(showFuncNoOp);
+      }
       if (c.type === "code") {
         accumulatedCode.push(c.content);
       }

@@ -14,18 +14,17 @@ const html = `
   const handleError=(err)=>{
     const root=document.querySelector('#root');
     root.innerHTML='<div style="color:red"><h4>Runtime error </h4>' + err.message + '</div>'
-   console.error(err.message);
-
+    console.error(err.message);
   }
     window.addEventListener('error',(event)=>{
       event.preventDefault()
       handleError(event.error)
     })
-    window.addEventListener('message',(event)=>{
+    window.addEventListener('message',(event)=>{    
       try{
-        eval(event.data)
+        eval(event.data)       
       }catch(error){
-        handleError(error)
+        handleError(error)       
       }
     },false)
   </script>

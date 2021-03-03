@@ -19,7 +19,7 @@ will render Hi in iframe
 
 #### <pre> show( < some html tag> Hi </some html tag> ) </pre>
 
-is equivalent to if the arg of show() looks like JSX imports and render are done by the function
+is equivalent to 
 
 import React from "react";
 
@@ -29,6 +29,6 @@ const App = () => < some html tag> Hi </some html tag>;
 
 ReactDOM.render(<App />, document.querySelector("#root"));
 
-
+if the arg of show() looks like JSX imports and render are done by the function
 
 

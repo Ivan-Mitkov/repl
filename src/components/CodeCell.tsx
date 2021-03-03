@@ -6,6 +6,7 @@ import { Direction } from "../enums";
 import { Cell } from "../state";
 import { useActions } from "../hooks/useActions";
 import { useTypedSelector } from "../hooks/useTypedSelector";
+import "./code-cell.css";
 
 interface CodeCellProps {
   cell: Cell;
@@ -18,7 +19,10 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const handleValueChange = (value: string) => {
     updateCell(cell.id, value);
   };
-
+  React.useLayoutEffect(() => {
+    createBundle(cell.id, cell.content);
+    // eslint-disable-next-line
+  }, []);
   React.useEffect(() => {
     const timer = setTimeout(async () => {
       createBundle(cell.id, cell.content);
@@ -45,7 +49,18 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             onChange={(value: string) => handleValueChange(value)}
           ></CodeEditor>
         </Resizable>
-        {bundle && <Preview code={bundle.code} bundlingStatus={bundle.error} />}
+
+        {!bundle || bundle.loading ? (
+          <div className="progress-wrapper">
+            <div className="progress-cover">
+              <progress className="progress is-small is-primary" max="100">
+                Loading
+              </progress>
+            </div>
+          </div>
+        ) : (
+          <Preview code={bundle.code} bundlingStatus={bundle.error} />
+        )}
       </div>
     </Resizable>
   );

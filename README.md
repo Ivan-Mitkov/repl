@@ -2,7 +2,7 @@
 
 example use:
 in code cell
-<code>
+<pre>
 
 import React from "react";
 
@@ -13,14 +13,14 @@ const App = () =>  \< h1>  Hi \<\/h1>;
 
 ReactDOM.render( \<  App \/\>, document.querySelector("#root"));
 
-</code>
+</pre>
 
 will render Hi in iframe
 
-#### <pre> show( < some html tag> Hi </some html tag> ) </pre>
+#### <pre> show( \< h1> Hi \<\/h1> ) </pre>
 
 is equivalent to 
-
+<pre>
 import React from "react";
 
 import ReactDOM from "react-dom";
@@ -28,7 +28,7 @@ import ReactDOM from "react-dom";
 const App = () => \< h1> Hi \<\/h1>;
 
 ReactDOM.render(\<App \/\>, document.querySelector("#root"));
-
+</pre>
 if the arg of show() looks like JSX imports and render are done by the function
 
 

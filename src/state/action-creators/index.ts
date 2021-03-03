@@ -7,11 +7,9 @@ import {
   InsertCellAfterAction,
   MoveCellAction,
   UpdateCellAction,
-  BundleCompleteAction,
-  BundleStartAction,
 } from "../actions";
 import bundle from "../../bundler";
-import { CellTypes, Direction, Cell } from "../cell";
+import { CellTypes, Direction } from "../cell";
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {

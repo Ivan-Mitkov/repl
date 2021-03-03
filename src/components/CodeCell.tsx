@@ -14,7 +14,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   //action creators
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector((state) => state.bundles[cell.id]);
-  
+
   const handleValueChange = (value: string) => {
     updateCell(cell.id, value);
   };
@@ -27,7 +27,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [cell.content, cell.id]);
+    //createBundle is memoized in useTypedSelector
+  }, [cell.content, cell.id, createBundle]);
 
   return (
     <Resizable direction={Direction.vertical}>
